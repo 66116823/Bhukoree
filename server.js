@@ -351,16 +351,10 @@ app.put('/lists/update/', async (req, res) => { // แก้ไขข้อม�
 	const updateSQL = `
 	  UPDATE lists
 	  SET Age = ?, 
-		  Gender = ?,
-		  Marital_Status = ?,
 		  Occupation = ?, 
 		  Monthly_Income = ?,
-		  Educational_Qualifications = ?,
-		  Family_size = ?,
 		  latitude = ?, 
 		  longitude = ?,
-		  Pin_code = ?,
-		  Output = ?,
 		  Feedback = ?
 	  WHERE ID = ?
 	`; // คำสั่ง SQL สำหรับแก้ไขข้อมูล
