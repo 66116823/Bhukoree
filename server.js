@@ -397,6 +397,24 @@ app.delete('/lists/delete/', async (req, res) => { // ลบข้อมูล L
 	}
   });
 
+// POST /lists/search/:searchText - ค้นหาข้อมูล Right
+app.post('/lists/search/:searchText', async (req, res) => { // ค้นหาข้อมูล Right ตามข้อความที่ค้นหา
+	const { searchText } = req.params; // รับข้อความที่ค้นหาจาก request parameters
+  
+	if (/[^a-zA-Z0-9ก-๙\s]/.test(searchText)) { // ตรวจสอบข้อความที่ค้นหาว่าเป็นอักขระที่ไม่อนุญาต
+	  return res.status(400).json({ error: "Invalid search text" }); // ส่งข้อความข้อผิดพลาดเมื่อข้อมูลไม่ถูกต้อง
+	}
+  
+	const searchSQL = "SELECT * FROM lists WHERE ใส่ชื่อคอลั้มที่อยากค้นหาตรงนี้นะจ้ะ LIKE ?"; // คำสั่ง SQL สำหรับค้นหาข้อมูล
+	try { // เริ่มต้นการดักจับข้อผิดพลาด
+	  const [results] = await pool.query(searchSQL, [`%${searchText}%`]); // ค้นหาข้อมูลในฐานข้อมูล
+	  res.status(200).json(results); // ส่งผลลัพธ์กลับในรูปแบบ JSON
+	} catch (err) { // กรณีเกิดข้อผิดพลาด
+	  console.error('Database error:', err); // แสดงข้อผิดพลาดใน console
+	  res.status(500).json({ error: "Backend error", details: err.message }); // ส่งข้อความข้อผิดพลาดกลับ
+	}
+  });
+
 // Start server
 app.listen(port, () => { // เริ่มต้นเซิร์ฟเวอร์
     console.log(`Server is running on port ${port}`);  // แสดงข้อความยืนยันว่าเซิร์ฟเวอร์กำลังทำงาน
