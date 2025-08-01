@@ -1,0 +1,54 @@
+const int segmentPins[] = {16, 5, 4, 0, 2, 14, 15};
+
+const byte numbers[10][7] = {
+  {1,1,1,1,1,1,0},
+  {0,1,1,0,0,0,0},
+  {1,1,0,1,1,0,1},
+  {1,1,1,1,0,0,1},
+  {0,1,1,0,0,1,1},
+  {1,0,1,1,0,1,1},
+  {1,0,1,1,1,1,1},
+  {1,1,1,0,0,0,0},
+  {1,1,1,1,1,1,1},
+  {1,1,1,1,0,1,1}
+};
+
+const int buttonUp = D7;
+const int buttonDown = D6;
+
+int currentNumber = 0;
+
+void displayNumber(int num) {
+  for (int i = 0; i < 7; i++) {
+    digitalWrite(segmentPins[i], numbers[num][i]);
+  }
+}
+
+void setup() {
+  for (int i = 0; i < 7; i++) {
+    pinMode(segmentPins[i], OUTPUT);
+  }
+
+  pinMode(buttonUp, INPUT_PULLUP);
+  pinMode(buttonDown, INPUT_PULLUP);
+
+  displayNumber(currentNumber);
+}
+
+void loop() {
+  if (digitalRead(buttonUp) == LOW) {
+    delay(200); // debounce
+    currentNumber++;
+    if (currentNumber > 9) currentNumber = 0;
+    displayNumber(currentNumber);
+    while (digitalRead(buttonUp) == LOW);
+  }
+
+  if (digitalRead(buttonDown) == LOW) {
+    delay(200); // debounce
+    currentNumber--;
+    if (currentNumber < 0) currentNumber = 9;
+    displayNumber(currentNumber);
+    while (digitalRead(buttonDown) == LOW);
+  }
+}
